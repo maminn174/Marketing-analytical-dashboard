@@ -1,0 +1,17 @@
+.app {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+
+  &__title {
+    color: var(--main-color);
+    font-weight: 700;
+    font-size: 32px;
+  }
+
+  &__description {
+    font-weight: 500;
+    font-size: 20px;
+  }
+}

@@ -1,0 +1,10 @@
+.kpi-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: var(--color-light);
+  border: 2px solid #e5e7eb;
+  border-radius: var(--border-radius);
+  gap: 20px;
+  padding: 12px 24px;
+}

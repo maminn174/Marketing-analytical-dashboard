@@ -1,0 +1,72 @@
+export const mockData = [
+  {
+    id: 1,
+    date: '2026-06-01',
+    source: 'Яндекс Директ',
+    campaign: "Поиск Москва",
+    region: "Москва",
+    impressions: 12000,
+    clicks: 340,
+    spend: 5600,
+    leads: 12,
+    qualifiedLeads: 9,
+    sales: 3,
+    revenue: 120000
+  },
+  {
+    id: 2,
+    date: "2026-06-02",
+    source: "Яндекс Директ",
+    campaign: "РСЯ Москва",
+    region: "Москва",
+    impressions: 18000,
+    clicks: 220,
+    spend: 4300,
+    leads: 8,
+    qualifiedLeads: 5,
+    sales: 1,
+    revenue: 45000
+  },
+  {
+    id: 3,
+    date: "2026-06-03",
+    source: "Авито",
+    campaign: "Авито Москва",
+    region: "Москва",
+    impressions: 4200,
+    clicks: 95,
+    spend: 2100,
+    leads: 6,
+    qualifiedLeads: 4,
+    sales: 1,
+    revenue: 50000
+  },
+  {
+    id: 4,
+    date: "2026-06-04",
+    source: "SEO",
+    campaign: "Органика",
+    region: "СПб",
+    impressions: 6500,
+    clicks: 180,
+    spend: 0,
+    leads: 10,
+    qualifiedLeads: 7,
+    sales: 2,
+    revenue: 85000
+  },
+  {
+    id: 5,
+    date: "2026-06-05",
+    source: "VK Ads",
+    campaign: "VK Лиды",
+    region: "Краснодар",
+    impressions: 9000,
+    clicks: 160,
+    spend: 3700,
+    leads: 5,
+    qualifiedLeads: 3,
+    sales: 1,
+    revenue: 40000
+  }
+];
