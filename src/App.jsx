@@ -8,7 +8,6 @@ import {useState} from "react";
 
 
 const App = () => {
-  const metrics = calculateMetrics(mockData)
 
   const [selectedRegion, setSelectedRegion] = useState("Все регионы")
   const [selectedMonth, setSelectedMonth] = useState("Все время")
@@ -24,6 +23,12 @@ const App = () => {
 
     return regionMatch && monthMatch
   })
+  const metrics = calculateMetrics(filteredData)
+
+  const testTotalCost = mockData.reduce(
+    (sum, item) => sum + item.spend,
+    0
+  )
 
 
   return (
@@ -59,6 +64,24 @@ const App = () => {
         </label>
       </div>
       <DataTable data={filteredData} />
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Дата</th>
+              <th>Клики</th>
+              <th>Расход</th>
+            </tr>
+          </thead>
+          <tbody>
+            {mockData.map(({ id, date, clicks, }) => (
+              <tr key={id}>
+                <td>{date}</td>
+                <td>{clicks}</td>
+                <td>{testTotalCost}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
     </div>
   )
 }
