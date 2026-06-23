@@ -12,14 +12,14 @@ const App = () => {
   const [selectedRegion, setSelectedRegion] = useState("Все регионы")
   const [selectedMonth, setSelectedMonth] = useState("Все время")
   const regions = ["Все регионы", ...new Set(mockData.map((item) => item.region))]
-  const months = ["Все время", ...new Set(mockData.map((item) => item.date))]
+  const months = ["Все время", ...new Set(mockData.map((item) => item.month))]
 
   const filteredData = mockData.filter((item) => {
     const regionMatch =
       selectedRegion === "Все регионы" || item.region === selectedRegion
 
     const monthMatch =
-      selectedMonth === "Все время" || item.date === selectedMonth
+      selectedMonth === "Все время" || item.month === selectedMonth
 
     return regionMatch && monthMatch
   })
