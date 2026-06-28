@@ -15,24 +15,31 @@ export const calculateMetrics = (data) => {
     return sum + item.sales;
   }, 0);
 
-  const totalRevenue = data.reduce((sum, item) => {
-    return sum + item.revenue;
+  const positionItems = data.filter((item) => item.avgImpressionPosition > 0);
+  const positionImpressions = positionItems.reduce((sum, item) => {
+    return sum + item.impressions;
+  }, 0);
+  const positionWeightedSum = positionItems.reduce((sum, item) => {
+    return sum + item.avgImpressionPosition * item.impressions;
   }, 0);
 
   const cpl = totalLeads > 0 ? totalSpend / totalLeads : 0;
 
   const cpql = totalQualifiedLeads > 0 ? totalSpend / totalQualifiedLeads : 0;
 
-  const romi = totalSpend > 0 ? ((totalRevenue - totalSpend) / totalSpend) * 100 : 0;
+  const qualifiedLeadCr = totalLeads > 0 ? (totalQualifiedLeads / totalLeads) * 100 : 0;
+
+  const avgImpressionPosition =
+    positionImpressions > 0 ? positionWeightedSum / positionImpressions : 0;
 
   return {
     totalSpend,
     totalLeads,
     totalQualifiedLeads,
     totalSales,
-    totalRevenue,
     cpl,
     cpql,
-    romi
+    qualifiedLeadCr,
+    avgImpressionPosition
   };
 }

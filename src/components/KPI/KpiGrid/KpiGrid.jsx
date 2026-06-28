@@ -1,5 +1,6 @@
 import './KpiGrid.scss'
 import KpiCard from "../KpiCard";
+import { formatNumber, formatCurrency, formatPercent } from '../../../utils/formatters'
 
 const KpiGrid = (props) => {
   const {
@@ -8,14 +9,14 @@ const KpiGrid = (props) => {
 
   return (
     <div className="kpi-grid">
-      <KpiCard title="Общий расход" value={`${metrics.totalSpend} ₽`} />
-      <KpiCard title="Лиды" value={metrics.totalLeads} />
-      <KpiCard title="Квал. лиды" value={metrics.totalQualifiedLeads} />
-      <KpiCard title="Продажи" value={metrics.totalSales} />
-      <KpiCard title="Выручка" value={`${metrics.totalRevenue} ₽`} />
-      <KpiCard title="CPL" value={`${metrics.cpl.toFixed(0)} ₽`} />
-      <KpiCard title="CPQL" value={`${metrics.cpql.toFixed(0)} ₽`} />
-      <KpiCard title="ROMI" value={`${metrics.romi.toFixed(1)}%`} />
+      <KpiCard title="Общий расход" value={formatCurrency(metrics.totalSpend)} />
+      <KpiCard title="Лиды" value={formatNumber(metrics.totalLeads)} />
+      <KpiCard title="Квал. лиды" value={formatNumber(metrics.totalQualifiedLeads)} />
+      <KpiCard title="Продажи" value={formatNumber(metrics.totalSales)} />
+      <KpiCard title="CPL" value={formatCurrency(metrics.cpl.toFixed(0))} />
+      <KpiCard title="CPQL" value={formatCurrency(metrics.cpql.toFixed(0))} />
+      <KpiCard title="CR в квал. лид" value={formatPercent(metrics.qualifiedLeadCr)} />
+      <KpiCard title="Сред. позиция" value={metrics.avgImpressionPosition.toFixed(1)} />
     </div>
   )
 }

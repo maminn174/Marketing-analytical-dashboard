@@ -1,42 +1,72 @@
 import './DataTable.scss'
+import { formatNumber, formatPosition, formatCurrency, formatPercent } from '../../utils/formatters'
 
 const DataTable = ({ data }) => {
   return (
     <div className="data-table__wrapper">
       <table className="data-table">
-      <thead>
-        <tr>
-          <th>Дата</th>
-          <th>Источник</th>
-          <th>Кампания</th>
-          <th>Регион</th>
-          <th>Показы</th>
-          <th>Клики</th>
-          <th>Расход</th>
-          <th>Лиды</th>
-          <th>Квал. лиды</th>
-          <th>Продажи</th>
-          <th>Выручка</th>
-        </tr>
-      </thead>
-      <tbody>
-        {data.map(({ id, date, source, campaign, region, impressions, clicks, spend, leads, qualifiedLeads, sales, revenue }) => (
-          <tr key={id}>
-            <td>{date}</td>
-            <td>{source}</td>
-            <td>{campaign}</td>
-            <td>{region}</td>
-            <td>{impressions}</td>
-            <td>{clicks}</td>
-            <td>{spend}</td>
-            <td>{leads}</td>
-            <td>{qualifiedLeads}</td>
-            <td>{sales}</td>
-            <td>{revenue}</td>
+        <thead>
+          <tr>
+            <th>Дата</th>
+            <th>Источник</th>
+            <th>Кампания</th>
+            <th>Ключ</th>
+            <th>Регион</th>
+            <th>Показы</th>
+            <th>Клики</th>
+            <th>Расход</th>
+            <th>Лиды</th>
+            <th>CPL</th>
+            <th>Квал. лиды</th>
+            <th>CPQL</th>
+            <th>CR в квал.</th>
+            <th>Сред. позиция</th>
+            <th>Продажи</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {data.map((item) => {
+            const {
+              id,
+              date,
+              source,
+              campaign,
+              region,
+              impressions,
+              clicks,
+              keyword,
+              spend,
+              leads,
+              qualifiedLeads,
+              avgImpressionPosition,
+              sales
+            } = item
+            const qualifiedLeadCr = leads > 0 ? (qualifiedLeads / leads) * 100 : 0
+            const cpl = leads > 0 ? (spend/leads) : spend
+            const cpql = qualifiedLeads > 0 ? (spend/qualifiedLeads) : spend
+
+            return (
+              <tr key={id}>
+                <td>{date}</td>
+                <td>{source}</td>
+                <td>{campaign}</td>
+                <td>{keyword}</td>
+                <td>{region}</td>
+                <td>{formatNumber(impressions)}</td>
+                <td>{formatNumber(clicks)}</td>
+                <td>{formatCurrency(spend)}</td>
+                <td>{formatNumber(leads)}</td>
+                <td>{formatCurrency(cpl.toFixed(0))}</td>
+                <td>{formatNumber(qualifiedLeads)}</td>
+                <td>{formatCurrency(cpql.toFixed(0))}</td>
+                <td>{formatPercent(qualifiedLeadCr)}</td>
+                <td>{formatPosition(avgImpressionPosition)}</td>
+                <td>{formatNumber(sales)}</td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
     </div>
   )
 }

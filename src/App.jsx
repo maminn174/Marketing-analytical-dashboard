@@ -1,40 +1,141 @@
+import { useState } from "react";
 import './App.scss'
 import DataTable from "./components/DataTable";
-import { mockData } from "./data/mockData";
+import {missedLeadsMockData, mockData} from "./data/mockData";
 import { calculateMetrics } from "./utils/calculateMetrics";
 import KpiGrid from './components/KPI/KpiGrid/KpiGrid'
-import {useState} from "react";
+import {mergeMissedLeads} from "./utils/mergeMissedLeads";
 
-
+const ALL_REGIONS = "Все регионы"
+const ALL_DATES = "Все время"
+const ALL_CAMPAIGNS = "Все кампании"
 
 const App = () => {
+  const [mainData, setMainData] = useState(mockData)
+  const [missedLeadsData, setMissedLeadsData] = useState(missedLeadsMockData)
 
-  const [selectedRegion, setSelectedRegion] = useState("Все регионы")
-  const [selectedMonth, setSelectedMonth] = useState("Все время")
-  const regions = ["Все регионы", ...new Set(mockData.map((item) => item.region))]
-  const months = ["Все время", ...new Set(mockData.map((item) => item.date))]
+  const mergedData = mergeMissedLeads(mainData, missedLeadsData)
 
-  const filteredData = mockData.filter((item) => {
-    const regionMatch =
-      selectedRegion === "Все регионы" || item.region === selectedRegion
+  const [selectedRegion, setSelectedRegion] = useState(ALL_REGIONS)
+  const [selectedDate, setSelectedDate] = useState(ALL_DATES)
+  const [selectedCampaign, setSelectedCampaign] = useState(ALL_CAMPAIGNS)
 
-    const monthMatch =
-      selectedMonth === "Все время" || item.date === selectedMonth
+  const regions = [ALL_REGIONS, ...new Set(mergedData.map((item) => item.region))]
+  const dates = [ALL_DATES, ...new Set(mergedData.map((item) => item.date))]
+  const campaigns = [ALL_CAMPAIGNS, ...new Set(mergedData.map((item) => item.campaign))]
 
-    return regionMatch && monthMatch
+  const filteredData = mergedData.filter((item) => {
+    const regionMatch = selectedRegion === ALL_REGIONS || item.region === selectedRegion
+    const dateMatch = selectedDate === ALL_DATES || item.date === selectedDate
+    const campaignMatch = selectedCampaign === ALL_CAMPAIGNS || item.campaign === selectedCampaign
+
+    return regionMatch && dateMatch && campaignMatch
   })
+
   const metrics = calculateMetrics(filteredData)
 
-  const testTotalCost = mockData.reduce(
-    (sum, item) => sum + item.spend,
-    0
-  )
+  const handleMainFileChange = async (event) => {
+    const file = event.target.files[0]
 
+    if (!file) {
+      return
+    }
+
+    const text = await file.text()
+    const parsedData = parseCsv(text)
+    const mappedData = parsedData.map((row, index) => mapMainCsvRow(row, index))
+    const normalizedData = mappedData.map((row) => normalizeMainRow(row))
+    console.log(normalizedData)
+  }
+  const handleMissedLeadsFileChange = async (event) => {
+    const file = event.target.files[0]
+
+    if (!file) {
+      return
+    }
+
+    const text = await file.text()
+    console.log(text)
+  }
+
+  const parseCsv = (text) => {
+    const lines = text.trim().split('\n')
+    const headers = lines[0].split(';')
+    const rows = lines.slice(1)
+
+    const parsedRows = rows.map((row) => {
+      const values = row.split(';')
+      const object = {}
+      headers.forEach((header, index) => {
+        object[header] = values[index]
+      })
+      return object
+    })
+    return parsedRows
+  }
+
+  const normalizeMainRow = (row) => {
+    const numericFields = [
+      "id",
+      "spend",
+      "clicks",
+      "directConversions",
+      "impressions",
+      "avgBidPerClick",
+      "avgImpressionPosition",
+      "leads",
+      "qualifiedLeads",
+      "sales",
+    ]
+    const normalizedRow = {...row}
+    numericFields.forEach((field) => {
+      normalizedRow[field] = Number(normalizedRow[field])
+    })
+    return normalizedRow
+  }
+
+  const mapMainCsvRow = (row, index) => {
+    return {
+      id: index + 1,
+      date: row["День"],
+      campaign: row["Название кампании"],
+      groupName: row["Название группы"],
+      keyword: row["Ключевая фраза"],
+      source: "Яндекс Директ",
+      leads: 0,
+      qualifiedLeads: 0,
+      sales: 0,
+      region: "Не указан",
+      spend: row["Расход, ₽"],
+      clicks: row["Клики"],
+      directConversions: row["Конверсии"],
+      impressions: row["Показы"],
+      avgBidPerClick: row["Ср. ставка за клик, ₽"],
+      avgImpressionPosition: row["Ср. позиция показа"],
+    }
+  }
 
   return (
     <div className="app">
       <h1 className="app__title">Маркетинговый дашборд</h1>
-      <KpiGrid metrics={metrics} />
+      <div className="upload">
+        <label>
+          Файл Директа
+          <input
+            type="file"
+            accept=".csv"
+            onChange={handleMainFileChange}
+          />
+        </label>
+        <label>
+          Неучтенные лиды
+          <input
+            type="file"
+            accept=".csv"
+            onChange={handleMissedLeadsFileChange}
+          />
+        </label>
+      </div>
       <div className="filters">
         <label>
           Регион:
@@ -50,38 +151,34 @@ const App = () => {
           </select>
         </label>
         <label>
-          Месяц:
+          Дата:
           <select
-            value={selectedMonth}
-            onChange={(event) => setSelectedMonth(event.target.value)}
+            value={selectedDate}
+            onChange={(event) => setSelectedDate(event.target.value)}
           >
-            {months.map((month) => (
-              <option key={month} value={month}>
-                {month}
+            {dates.map((date) => (
+              <option key={date} value={date}>
+                {date}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Кампания:
+          <select
+            value={selectedCampaign}
+            onChange={(event) => setSelectedCampaign(event.target.value)}
+          >
+            {campaigns.map((campaign) => (
+              <option key={campaign} value={campaign}>
+                {campaign}
               </option>
             ))}
           </select>
         </label>
       </div>
+      <KpiGrid metrics={metrics} />
       <DataTable data={filteredData} />
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>Дата</th>
-              <th>Клики</th>
-              <th>Расход</th>
-            </tr>
-          </thead>
-          <tbody>
-            {mockData.map(({ id, date, clicks, }) => (
-              <tr key={id}>
-                <td>{date}</td>
-                <td>{clicks}</td>
-                <td>{testTotalCost}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
     </div>
   )
 }
