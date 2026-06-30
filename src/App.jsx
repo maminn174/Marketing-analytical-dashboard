@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Papa from "papaparse";
 import './App.scss'
 import DataTable from "./components/DataTable";
 import {missedLeadsMockData, mockData} from "./data/mockData";
@@ -11,8 +12,8 @@ const ALL_DATES = "Все время"
 const ALL_CAMPAIGNS = "Все кампании"
 
 const App = () => {
-  const [mainData, setMainData] = useState(mockData)
-  const [missedLeadsData, setMissedLeadsData] = useState(missedLeadsMockData)
+  const [mainData] = useState(mockData)
+  const [missedLeadsData] = useState(missedLeadsMockData)
 
   const mergedData = mergeMissedLeads(mainData, missedLeadsData)
 
@@ -42,10 +43,15 @@ const App = () => {
     }
 
     const text = await file.text()
-    const parsedData = parseCsv(text)
+    const parsedData = Papa.parse(text, {
+      header: true,
+      skipEmptyLines: true,
+    }).data
     const mappedData = parsedData.map((row, index) => mapMainCsvRow(row, index))
     const normalizedData = mappedData.map((row) => normalizeMainRow(row))
     console.log(normalizedData)
+    console.log(Object.keys(parsedData[0]))
+    console.log(parsedData[0])
   }
   const handleMissedLeadsFileChange = async (event) => {
     const file = event.target.files[0]
@@ -58,20 +64,19 @@ const App = () => {
     console.log(text)
   }
 
-  const parseCsv = (text) => {
-    const lines = text.trim().split('\n')
-    const headers = lines[0].split(';')
-    const rows = lines.slice(1)
+  const parseCsvNumber = (value) => {
+    if (value === undefined || value === null || value === "") {
+      return 0
+    }
 
-    const parsedRows = rows.map((row) => {
-      const values = row.split(';')
-      const object = {}
-      headers.forEach((header, index) => {
-        object[header] = values[index]
-      })
-      return object
-    })
-    return parsedRows
+    return Number(
+      String(value)
+        .replace(/\s/g, "")
+        .replace("₽", "")
+        .replace("%", "")
+        .replace(",", ".")
+        .replace(/"/g, "")
+    )
   }
 
   const normalizeMainRow = (row) => {
@@ -89,7 +94,7 @@ const App = () => {
     ]
     const normalizedRow = {...row}
     numericFields.forEach((field) => {
-      normalizedRow[field] = Number(normalizedRow[field])
+      normalizedRow[field] = parseCsvNumber(normalizedRow[field])
     })
     return normalizedRow
   }
