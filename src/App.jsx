@@ -1,19 +1,19 @@
 import { useState } from "react";
-import Papa from "papaparse";
 import './App.scss'
 import DataTable from "./components/DataTable";
 import {missedLeadsMockData, mockData} from "./data/mockData";
 import { calculateMetrics } from "./utils/calculateMetrics";
 import KpiGrid from './components/KPI/KpiGrid/KpiGrid'
 import {mergeMissedLeads} from "./utils/mergeMissedLeads";
+import Papa from 'papaparse'
 
 const ALL_REGIONS = "Все регионы"
 const ALL_DATES = "Все время"
 const ALL_CAMPAIGNS = "Все кампании"
 
 const App = () => {
-  const [mainData] = useState(mockData)
-  const [missedLeadsData] = useState(missedLeadsMockData)
+  const [mainData, setMainData] = useState(mockData)
+  const [missedLeadsData, setMissedLeadsData] = useState(missedLeadsMockData)
 
   const mergedData = mergeMissedLeads(mainData, missedLeadsData)
 
@@ -42,16 +42,17 @@ const App = () => {
       return
     }
 
-    const text = await file.text()
-    const parsedData = Papa.parse(text, {
+    Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
-    }).data
-    const mappedData = parsedData.map((row, index) => mapMainCsvRow(row, index))
-    const normalizedData = mappedData.map((row) => normalizeMainRow(row))
-    console.log(normalizedData)
-    console.log(Object.keys(parsedData[0]))
-    console.log(parsedData[0])
+      complete: (results) => {
+        const parsedData = results.data
+        const dataWithoutTotal = parsedData.filter((item) => item["Название кампании"] !== 'Итого')
+        const mappedData = dataWithoutTotal.map((row, index) => mapMainCsvRow(row, index))
+        const normalizedData = mappedData.map((row) => normalizeMainRow(row))
+        setMainData(normalizedData)
+      }
+    })
   }
   const handleMissedLeadsFileChange = async (event) => {
     const file = event.target.files[0]
