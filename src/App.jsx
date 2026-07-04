@@ -6,6 +6,7 @@ import { calculateMetrics } from "./utils/calculateMetrics";
 import KpiGrid from './components/KPI/KpiGrid/KpiGrid'
 import {mergeMissedLeads} from "./utils/mergeMissedLeads";
 import Papa from 'papaparse'
+import isDateInRange from "./utils/periodUtils";
 
 const ALL_REGIONS = "Все регионы"
 const ALL_DATES = "Все время"
@@ -120,6 +121,13 @@ const App = () => {
       avgImpressionPosition: row["Ср. позиция показа"],
     }
   }
+
+  const startDate = '20.06.2025'
+  const date = '18.06.2025'
+  const endDate = '24.06.2025'
+
+  console.log(isDateInRange(startDate, date, endDate))
+
 
   return (
     <div className="app">
