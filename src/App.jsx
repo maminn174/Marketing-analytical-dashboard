@@ -28,10 +28,18 @@ const App = () => {
 
   const filteredData = mergedData.filter((item) => {
     const regionMatch = selectedRegion === ALL_REGIONS || item.region === selectedRegion
-    const dateMatch = selectedDate === ALL_DATES || item.date === selectedDate
     const campaignMatch = selectedCampaign === ALL_CAMPAIGNS || item.campaign === selectedCampaign
+    let periodMatch = selectedDate === ALL_DATES || item.date === selectedDate
 
-    return regionMatch && dateMatch && campaignMatch
+      if (startDate === null || endDate === null) {
+        periodMatch === true
+      }
+
+      if (startDate !== null && endDate !== null) {
+        return periodMatch = isDateInRange(item.date, startDate, endDate)
+      }
+
+    return regionMatch && campaignMatch && periodMatch
   })
 
   const metrics = calculateMetrics(filteredData)
@@ -66,7 +74,7 @@ const App = () => {
     console.log(text)
   }
 
-  const parseCsvNumber = (value) => {
+  const parsesvNumber = (value) => {
     if (value === undefined || value === null || value === "") {
       return 0
     }
@@ -122,12 +130,8 @@ const App = () => {
     }
   }
 
-  const startDate = '20.06.2025'
-  const date = '18.06.2025'
-  const endDate = '24.06.2025'
-
-  console.log(isDateInRange(startDate, date, endDate))
-
+  const startDate = '22.06.2025'
+  const endDate = '22.06.2025'
 
   return (
     <div className="app">
