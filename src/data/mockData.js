@@ -1,7 +1,7 @@
 export const mockData = [
   {
     id: 1,
-    date: "20.06.2025",
+    date: "20.06.2026",
     source: "Яндекс Директ",
     campaign: "Поиск | Банкротство физлиц | Москва",
     groupName: "Горячие запросы",
@@ -19,7 +19,7 @@ export const mockData = [
   },
   {
     id: 2,
-    date: "20.06.2025",
+    date: "20.06.2026",
     source: "Яндекс Директ",
     campaign: "РСЯ | Банкротство физлиц | Москва",
     groupName: "Ретаргетинг",
@@ -37,7 +37,7 @@ export const mockData = [
   },
   {
     id: 3,
-    date: "21.06.2025",
+    date: "21.06.2026",
     source: "Яндекс Директ",
     campaign: "Поиск | Банкротство физлиц | Санкт-Петербург",
     groupName: "Консультация",
@@ -55,7 +55,7 @@ export const mockData = [
   },
   {
     id: 4,
-    date: "21.06.2025",
+    date: "21.06.2026",
     source: "Яндекс Директ",
     campaign: "Поиск | Банкротство ИП | Краснодар",
     groupName: "ИП",
@@ -73,7 +73,7 @@ export const mockData = [
   },
   {
     id: 5,
-    date: "22.06.2025",
+    date: "22.06.2026",
     source: "Яндекс Директ",
     campaign: "Мастер кампаний | Банкротство | РФ",
     groupName: "Автотаргетинг",
@@ -94,7 +94,7 @@ export const mockData = [
 export const missedLeadsMockData = [
   {
     id: 1,
-    date: "20.06.2025",
+    date: "20.06.2026",
     campaign: "Поиск | Банкротство физлиц | Москва",
     keyword: "списать долги через банкротство",
     amoDealUrl: "https://example.amocrm.ru/leads/detail/482910",
@@ -102,7 +102,7 @@ export const missedLeadsMockData = [
   },
   {
     id: 2,
-    date: "21.06.2025",
+    date: "21.06.2026",
     campaign: "РСЯ | Банкротство физлиц | Москва",
     keyword: "банкротство физ лица",
     amoDealUrl: "https://example.amocrm.ru/leads/detail/482977",
@@ -110,7 +110,7 @@ export const missedLeadsMockData = [
   },
   {
     id: 3,
-    date: "22.06.2025",
+    date: "22.06.2026",
     campaign: "Поиск | Банкротство ИП | Регионы",
     keyword: "банкротство ип под ключ",
     amoDealUrl: "https://example.amocrm.ru/leads/detail/483126",

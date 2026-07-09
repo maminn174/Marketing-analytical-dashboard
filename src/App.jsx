@@ -9,7 +9,6 @@ import Papa from 'papaparse'
 import isDateInRange from "./utils/periodUtils";
 
 const ALL_REGIONS = "Все регионы"
-const ALL_DATES = "Все время"
 const ALL_CAMPAIGNS = "Все кампании"
 
 const App = () => {
@@ -19,25 +18,28 @@ const App = () => {
   const mergedData = mergeMissedLeads(mainData, missedLeadsData)
 
   const [selectedRegion, setSelectedRegion] = useState(ALL_REGIONS)
-  const [selectedDate, setSelectedDate] = useState(ALL_DATES)
   const [selectedCampaign, setSelectedCampaign] = useState(ALL_CAMPAIGNS)
+  const [startDate, setStartDate] = useState(null)
+  const [endDate, setEndDate] = useState(null)
 
   const regions = [ALL_REGIONS, ...new Set(mergedData.map((item) => item.region))]
-  const dates = [ALL_DATES, ...new Set(mergedData.map((item) => item.date))]
   const campaigns = [ALL_CAMPAIGNS, ...new Set(mergedData.map((item) => item.campaign))]
 
   const filteredData = mergedData.filter((item) => {
     const regionMatch = selectedRegion === ALL_REGIONS || item.region === selectedRegion
     const campaignMatch = selectedCampaign === ALL_CAMPAIGNS || item.campaign === selectedCampaign
-    let periodMatch = selectedDate === ALL_DATES || item.date === selectedDate
+    let periodMatch = true
+    const today = new Date().toISOString().slice(0, 10)
 
-      if (startDate === null || endDate === null) {
-        periodMatch === true
-      }
-
-      if (startDate !== null && endDate !== null) {
-        return periodMatch = isDateInRange(item.date, startDate, endDate)
-      }
+    if (startDate === null && endDate === null) {
+      periodMatch = true
+    } else if (startDate !== null && endDate === null) {
+       periodMatch = isDateInRange(item.date, startDate, today)
+    } else if (startDate !== null && endDate !== null) {
+       periodMatch = isDateInRange(item.date, startDate, endDate)
+    } else if (startDate === null && endDate !== null) {
+      periodMatch = true
+    }
 
     return regionMatch && campaignMatch && periodMatch
   })
@@ -74,7 +76,26 @@ const App = () => {
     console.log(text)
   }
 
-  const parsesvNumber = (value) => {
+  const handleDateClick = (clickedDate) => {
+    if (startDate === null) {
+      setStartDate(clickedDate)
+      return
+    }
+
+    if (endDate === null) {
+      if (clickedDate < startDate) {
+        setStartDate(clickedDate)
+        setEndDate(startDate)
+      } else {
+        setEndDate(clickedDate)
+      }
+      return
+    }
+    setStartDate(clickedDate)
+    setEndDate(null)
+  }
+
+  const parseCsvNumber = (value) => {
     if (value === undefined || value === null || value === "") {
       return 0
     }
@@ -130,29 +151,45 @@ const App = () => {
     }
   }
 
-  const startDate = '22.06.2025'
-  const endDate = '22.06.2025'
-
   return (
     <div className="app">
       <h1 className="app__title">Маркетинговый дашборд</h1>
       <div className="upload">
-        <label>
-          Файл Директа
-          <input
-            type="file"
-            accept=".csv"
-            onChange={handleMainFileChange}
-          />
-        </label>
-        <label>
-          Неучтенные лиды
-          <input
-            type="file"
-            accept=".csv"
-            onChange={handleMissedLeadsFileChange}
-          />
-        </label>
+        {/*<label>*/}
+        {/*  Файл Директа*/}
+        {/*  <input*/}
+        {/*    type="file"*/}
+        {/*    accept=".csv"*/}
+        {/*    onChange={handleMainFileChange}*/}
+        {/*  />*/}
+        {/*</label>*/}
+        <input
+          type="date"
+          value={startDate ?? ""}
+          onChange={(event) => setStartDate(event.target.value || null)}
+        />
+        <input
+          type="date"
+          value={endDate ?? ""}
+          onChange={(event) => setEndDate(event.target.value || null)}
+        />
+        <button type="button" onClick={() => handleDateClick("2026-06-20")}>
+          20.06.2026
+        </button>
+        <button type="button" onClick={() => handleDateClick("2026-06-21")}>
+          21.06.2026
+        </button>
+        <button type="button" onClick={() => handleDateClick("2026-06-22")}>
+          22.06.2026
+        </button>
+        {/*<label>*/}
+        {/*  Неучтенные лиды*/}
+        {/*  <input*/}
+        {/*    type="file"*/}
+        {/*    accept=".csv"*/}
+        {/*    onChange={handleMissedLeadsFileChange}*/}
+        {/*  />*/}
+        {/*</label>*/}
       </div>
       <div className="filters">
         <label>
@@ -164,19 +201,6 @@ const App = () => {
             {regions.map((region) => (
               <option key={region} value={region}>
                 {region}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Дата:
-          <select
-            value={selectedDate}
-            onChange={(event) => setSelectedDate(event.target.value)}
-          >
-            {dates.map((date) => (
-              <option key={date} value={date}>
-                {date}
               </option>
             ))}
           </select>

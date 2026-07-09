@@ -1,10 +1,26 @@
 const parseDate = (date) => {
-  const splitDate = date.split('.')
-  const day = Number(splitDate[0])
-  const month = Number(splitDate[1])
-  const year = Number(splitDate[2])
 
-  return new Date(year, month - 1, day)
+  if (!date) {
+    return null
+  }
+
+  if (date.includes('.')) {
+    const splitDate = date.split('.')
+    const day = Number(splitDate[0])
+    const month = Number(splitDate[1])
+    const year = Number(splitDate[2])
+
+    return new Date(year, month - 1, day)
+  }
+
+  if (date.includes('-')) {
+    const splitDate = date.split('-')
+    const year = Number(splitDate[0])
+    const month = Number(splitDate[1])
+    const day = Number(splitDate[2])
+
+    return new Date(year, month - 1, day)
+  }
 }
 
 const isDateInRange = (date, startDate, endDate) => {
