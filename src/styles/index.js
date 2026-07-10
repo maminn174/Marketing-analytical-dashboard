@@ -4,3 +4,5 @@ import './normalize.scss';
 import './variables.scss';
 import './globals.scss';
 import './utils.scss';
+import '@mantine/core/styles.css'
+import '@mantine/dates/styles.css'

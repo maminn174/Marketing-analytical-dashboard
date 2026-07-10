@@ -11,6 +11,10 @@
   },
   "dependencies": {
     "@a1rth/css-normalize": "^1.2.4",
+    "@mantine/core": "^9.4.1",
+    "@mantine/dates": "^9.4.1",
+    "@mantine/hooks": "^9.4.1",
+    "dayjs": "^1.11.21",
     "papaparse": "^5.5.4",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"

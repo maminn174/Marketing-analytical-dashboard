@@ -1,36 +1,60 @@
+import { DatePickerInput } from "@mantine/dates";
+import dayjs from 'dayjs';
+import 'dayjs/locale/ru'
+
 const DateRangeControls = ({
   startDate,
   endDate,
   onStartDateChange,
   onEndDateChange,
-  onDateClick,
 }) => {
+
+  const value = [startDate, endDate]
+
+  const handleRangeChange = (range) => {
+    onStartDateChange(range[0])
+    onEndDateChange(range[1])
+  }
+
+  const today = dayjs();
+
   return (
-    <div className="upload">
-      <input
-        type="date"
-        value={startDate ?? ""}
-        onChange={(event) => onStartDateChange(event.target.value || null)}
-      />
+<>
 
-      <input
-        type="date"
-        value={endDate ?? ""}
-        onChange={(event) => onEndDateChange(event.target.value || null)}
-      />
-
-      <button type="button" onClick={() => onDateClick("2026-06-20")}>
-        20.06.2026
-      </button>
-
-      <button type="button" onClick={() => onDateClick("2026-06-21")}>
-        21.06.2026
-      </button>
-
-      <button type="button" onClick={() => onDateClick("2026-06-22")}>
-        22.06.2026
-      </button>
-    </div>
+  <div className="upload">
+    <DatePickerInput
+      placeholder="Выберите даты"
+      clearable
+      valueFormat="DD.MM.YYYY"
+      maxDate={new Date()}
+      locale="ru"
+      numberOfColumns={2}
+      type="range"
+      value={value}
+      onChange={handleRangeChange}
+      allowSingleDateInRange
+      presets={[
+        { value: [today.format('YYYY-MM-DD'), today.format('YYYY-MM-DD')], label: 'Сегодня' },
+        {
+          value: [
+            today.subtract(1, 'day').format('YYYY-MM-DD'),
+            today.subtract(1, 'day').format('YYYY-MM-DD')
+          ],
+          label: 'Вчера'
+        },
+        {
+          value: [today.subtract(7, 'day').format('YYYY-MM-DD'), today.format('YYYY-MM-DD')],
+          label: 'За последние 7 дней',
+        },
+        {
+          value: [today.subtract(30, 'day').format('YYYY-MM-DD'), today.format('YYYY-MM-DD')],
+          label: 'За последние 30 дней',
+        },
+      ]}
+      w={280}
+    />
+  </div>
+</>
   )
 }
 
