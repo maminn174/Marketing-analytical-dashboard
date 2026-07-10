@@ -7,8 +7,10 @@ import DashboardFilters from "./components/DashboardFilters";
 import DateRangeControls from "./components/DateRangeControls";
 import { useDateRange } from "./hooks/useDateRange";
 import { useDashboardData } from "./hooks/useDashboardData";
+import {getPreviousEqualPeriod} from "./utils/comparisonPeriodUtils";
 
 const App = () => {
+
   const [selectedRegion, setSelectedRegion] = useState(ALL_REGIONS)
   const [selectedCampaign, setSelectedCampaign] = useState(ALL_CAMPAIGNS)
 
@@ -31,6 +33,9 @@ const App = () => {
     startDate,
     endDate,
   })
+
+  console.log(getPreviousEqualPeriod("2026-07-10", "2026-07-20"))
+
 
   return (
     <div className="app">
