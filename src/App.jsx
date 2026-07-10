@@ -1,224 +1,58 @@
 import { useState } from "react";
 import './App.scss'
 import DataTable from "./components/DataTable";
-import {missedLeadsMockData, mockData} from "./data/mockData";
-import { calculateMetrics } from "./utils/calculateMetrics";
-import KpiGrid from './components/KPI/KpiGrid/KpiGrid'
-import {mergeMissedLeads} from "./utils/mergeMissedLeads";
-import Papa from 'papaparse'
-import isDateInRange from "./utils/periodUtils";
-
-const ALL_REGIONS = "Все регионы"
-const ALL_CAMPAIGNS = "Все кампании"
+import KpiGrid from './components/KPI/KpiGrid'
+import { ALL_REGIONS, ALL_CAMPAIGNS } from "./constants/dashboardFilters";
+import DashboardFilters from "./components/DashboardFilters";
+import DateRangeControls from "./components/DateRangeControls";
+import { useDateRange } from "./hooks/useDateRange";
+import { useDashboardData } from "./hooks/useDashboardData";
 
 const App = () => {
-  const [mainData, setMainData] = useState(mockData)
-  const [missedLeadsData, setMissedLeadsData] = useState(missedLeadsMockData)
-
-  const mergedData = mergeMissedLeads(mainData, missedLeadsData)
-
   const [selectedRegion, setSelectedRegion] = useState(ALL_REGIONS)
   const [selectedCampaign, setSelectedCampaign] = useState(ALL_CAMPAIGNS)
-  const [startDate, setStartDate] = useState(null)
-  const [endDate, setEndDate] = useState(null)
 
-  const regions = [ALL_REGIONS, ...new Set(mergedData.map((item) => item.region))]
-  const campaigns = [ALL_CAMPAIGNS, ...new Set(mergedData.map((item) => item.campaign))]
+  const {
+    startDate,
+    endDate,
+    setStartDate,
+    setEndDate,
+    handleDateClick,
+  } = useDateRange()
 
-  const filteredData = mergedData.filter((item) => {
-    const regionMatch = selectedRegion === ALL_REGIONS || item.region === selectedRegion
-    const campaignMatch = selectedCampaign === ALL_CAMPAIGNS || item.campaign === selectedCampaign
-    let periodMatch = true
-    const today = new Date().toISOString().slice(0, 10)
-
-    if (startDate === null && endDate === null) {
-      periodMatch = true
-    } else if (startDate !== null && endDate === null) {
-       periodMatch = isDateInRange(item.date, startDate, today)
-    } else if (startDate !== null && endDate !== null) {
-       periodMatch = isDateInRange(item.date, startDate, endDate)
-    } else if (startDate === null && endDate !== null) {
-      periodMatch = true
-    }
-
-    return regionMatch && campaignMatch && periodMatch
+  const {
+    regions,
+    campaigns,
+    filteredData,
+    metrics,
+  } = useDashboardData({
+    selectedRegion,
+    selectedCampaign,
+    startDate,
+    endDate,
   })
-
-  const metrics = calculateMetrics(filteredData)
-
-  const handleMainFileChange = async (event) => {
-    const file = event.target.files[0]
-
-    if (!file) {
-      return
-    }
-
-    Papa.parse(file, {
-      header: true,
-      skipEmptyLines: true,
-      complete: (results) => {
-        const parsedData = results.data
-        const dataWithoutTotal = parsedData.filter((item) => item["Название кампании"] !== 'Итого')
-        const mappedData = dataWithoutTotal.map((row, index) => mapMainCsvRow(row, index))
-        const normalizedData = mappedData.map((row) => normalizeMainRow(row))
-        setMainData(normalizedData)
-      }
-    })
-  }
-  const handleMissedLeadsFileChange = async (event) => {
-    const file = event.target.files[0]
-
-    if (!file) {
-      return
-    }
-
-    const text = await file.text()
-    console.log(text)
-  }
-
-  const handleDateClick = (clickedDate) => {
-    if (startDate === null) {
-      setStartDate(clickedDate)
-      return
-    }
-
-    if (endDate === null) {
-      if (clickedDate < startDate) {
-        setStartDate(clickedDate)
-        setEndDate(startDate)
-      } else {
-        setEndDate(clickedDate)
-      }
-      return
-    }
-    setStartDate(clickedDate)
-    setEndDate(null)
-  }
-
-  const parseCsvNumber = (value) => {
-    if (value === undefined || value === null || value === "") {
-      return 0
-    }
-
-    return Number(
-      String(value)
-        .replace(/\s/g, "")
-        .replace("₽", "")
-        .replace("%", "")
-        .replace(",", ".")
-        .replace(/"/g, "")
-    )
-  }
-
-  const normalizeMainRow = (row) => {
-    const numericFields = [
-      "id",
-      "spend",
-      "clicks",
-      "directConversions",
-      "impressions",
-      "avgBidPerClick",
-      "avgImpressionPosition",
-      "leads",
-      "qualifiedLeads",
-      "sales",
-    ]
-    const normalizedRow = {...row}
-    numericFields.forEach((field) => {
-      normalizedRow[field] = parseCsvNumber(normalizedRow[field])
-    })
-    return normalizedRow
-  }
-
-  const mapMainCsvRow = (row, index) => {
-    return {
-      id: index + 1,
-      date: row["День"],
-      campaign: row["Название кампании"],
-      groupName: row["Название группы"],
-      keyword: row["Ключевая фраза"],
-      source: "Яндекс Директ",
-      leads: 0,
-      qualifiedLeads: 0,
-      sales: 0,
-      region: "Не указан",
-      spend: row["Расход, ₽"],
-      clicks: row["Клики"],
-      directConversions: row["Конверсии"],
-      impressions: row["Показы"],
-      avgBidPerClick: row["Ср. ставка за клик, ₽"],
-      avgImpressionPosition: row["Ср. позиция показа"],
-    }
-  }
 
   return (
     <div className="app">
       <h1 className="app__title">Маркетинговый дашборд</h1>
-      <div className="upload">
-        {/*<label>*/}
-        {/*  Файл Директа*/}
-        {/*  <input*/}
-        {/*    type="file"*/}
-        {/*    accept=".csv"*/}
-        {/*    onChange={handleMainFileChange}*/}
-        {/*  />*/}
-        {/*</label>*/}
-        <input
-          type="date"
-          value={startDate ?? ""}
-          onChange={(event) => setStartDate(event.target.value || null)}
-        />
-        <input
-          type="date"
-          value={endDate ?? ""}
-          onChange={(event) => setEndDate(event.target.value || null)}
-        />
-        <button type="button" onClick={() => handleDateClick("2026-06-20")}>
-          20.06.2026
-        </button>
-        <button type="button" onClick={() => handleDateClick("2026-06-21")}>
-          21.06.2026
-        </button>
-        <button type="button" onClick={() => handleDateClick("2026-06-22")}>
-          22.06.2026
-        </button>
-        {/*<label>*/}
-        {/*  Неучтенные лиды*/}
-        {/*  <input*/}
-        {/*    type="file"*/}
-        {/*    accept=".csv"*/}
-        {/*    onChange={handleMissedLeadsFileChange}*/}
-        {/*  />*/}
-        {/*</label>*/}
-      </div>
-      <div className="filters">
-        <label>
-          Регион:
-          <select
-            value={selectedRegion}
-            onChange={(event) => setSelectedRegion(event.target.value)}
-          >
-            {regions.map((region) => (
-              <option key={region} value={region}>
-                {region}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Кампания:
-          <select
-            value={selectedCampaign}
-            onChange={(event) => setSelectedCampaign(event.target.value)}
-          >
-            {campaigns.map((campaign) => (
-              <option key={campaign} value={campaign}>
-                {campaign}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
+
+      <DateRangeControls
+        startDate={startDate}
+        endDate={endDate}
+        onStartDateChange={setStartDate}
+        onEndDateChange={setEndDate}
+        onDateClick={handleDateClick}
+      />
+
+      <DashboardFilters
+        regions={regions}
+        campaigns={campaigns}
+        selectedRegion={selectedRegion}
+        selectedCampaign={selectedCampaign}
+        onRegionChange={setSelectedRegion}
+        onCampaignChange={setSelectedCampaign}
+      />
+
       <KpiGrid metrics={metrics} />
       <DataTable data={filteredData} />
     </div>
