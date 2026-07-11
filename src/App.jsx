@@ -7,7 +7,7 @@ import DashboardFilters from "./components/DashboardFilters";
 import DateRangeControls from "./components/DateRangeControls";
 import { useDateRange } from "./hooks/useDateRange";
 import { useDashboardData } from "./hooks/useDashboardData";
-import {getPreviousEqualPeriod} from "./utils/comparisonPeriodUtils";
+import { useComparisonPeriod } from "./hooks/useComparisonPeriod";
 
 const App = () => {
 
@@ -22,23 +22,33 @@ const App = () => {
     handleDateClick,
   } = useDateRange()
 
+   const {
+       comparisonStartDate,
+       comparisonEndDate,
+       applyPreviousEqualPeriod,
+   } = useComparisonPeriod({ startDate, endDate })
+
   const {
     regions,
     campaigns,
     filteredData,
     metrics,
+    comparisonMetrics,
   } = useDashboardData({
     selectedRegion,
     selectedCampaign,
     startDate,
     endDate,
+    comparisonStartDate,
+    comparisonEndDate,
   })
-
-  console.log(getPreviousEqualPeriod("2026-07-10", "2026-07-20"))
-
 
   return (
     <div className="app">
+      <button onClick={applyPreviousEqualPeriod}>
+        Проверить сравнение
+      </button>
+
       <h1 className="app__title">Маркетинговый дашборд</h1>
 
       <DateRangeControls
@@ -58,7 +68,7 @@ const App = () => {
         onCampaignChange={setSelectedCampaign}
       />
 
-      <KpiGrid metrics={metrics} />
+      <KpiGrid metrics={metrics} comparisonMetrics={comparisonMetrics} />
       <DataTable data={filteredData} />
     </div>
   )

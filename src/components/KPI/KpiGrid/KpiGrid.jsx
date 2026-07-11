@@ -1,16 +1,31 @@
 import './KpiGrid.scss'
 import KpiCard from "../KpiCard";
 import { formatNumber, formatCurrency, formatPercent } from '../../../utils/formatters'
+import {calculateMetricDelta} from "../../../utils/calculateMetricDelta";
 
 const KpiGrid = (props) => {
   const {
     metrics,
+    comparisonMetrics,
   } = props
+
+  const currentValue = metrics?.totalLeads
+  const comparisonValue = comparisonMetrics?.totalLeads
+
+  const delta = comparisonMetrics
+    ? calculateMetricDelta(currentValue, comparisonValue)
+    : null
 
   return (
     <div className="kpi-grid">
-      <KpiCard title="Общий расход" value={formatCurrency(metrics.totalSpend)} />
-      <KpiCard title="Лиды" value={formatNumber(metrics.totalLeads)} />
+      <KpiCard title="Общий расход" value={formatCurrency(metrics.totalSpend)}
+      />
+      <KpiCard
+        title="Лиды"
+        value={formatNumber(metrics.totalLeads)}
+        absoluteDelta={delta?.absoluteDelta}
+        percentDelta={delta?.percentDelta}
+      />
       <KpiCard title="Квал. лиды" value={formatNumber(metrics.totalQualifiedLeads)} />
       <KpiCard title="Продажи" value={formatNumber(metrics.totalSales)} />
       <KpiCard title="CPL" value={formatCurrency(metrics.cpl.toFixed(0))} />

@@ -17,6 +17,8 @@ const DateRangeControls = ({
   }
 
   const today = dayjs();
+  const julyDefaultDate = '2026-07-01'
+  const julyMaxDate = '2026-07-31'
 
   return (
 <>
@@ -26,7 +28,8 @@ const DateRangeControls = ({
       placeholder="Выберите даты"
       clearable
       valueFormat="DD.MM.YYYY"
-      maxDate={new Date()}
+      defaultDate={julyDefaultDate}
+      maxDate={julyMaxDate}
       locale="ru"
       numberOfColumns={2}
       type="range"
