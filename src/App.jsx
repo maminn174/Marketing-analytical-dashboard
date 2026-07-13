@@ -25,7 +25,7 @@ const App = () => {
    const {
        comparisonStartDate,
        comparisonEndDate,
-       applyPreviousEqualPeriod,
+       applyComparisonPreset,
    } = useComparisonPeriod({ startDate, endDate })
 
   const {
@@ -45,9 +45,19 @@ const App = () => {
 
   return (
     <div className="app">
-      <button onClick={applyPreviousEqualPeriod}>
-        Проверить сравнение
+      <button onClick={() => applyComparisonPreset('previous-equal')}>
+        Сравнение такого же периода
       </button>
+      <button onClick={() => applyComparisonPreset('previous-month')}>
+        Предыдущий месяц
+      </button>
+      <button onClick={() => applyComparisonPreset('previous-year')}>
+        Предыдущий год
+      </button>
+
+      <p>
+        Comparison: {comparisonStartDate} - {comparisonEndDate}
+      </p>
 
       <h1 className="app__title">Маркетинговый дашборд</h1>
 

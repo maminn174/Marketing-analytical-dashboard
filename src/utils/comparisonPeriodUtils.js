@@ -20,3 +20,39 @@ export const getPreviousEqualPeriod = (startDate, endDate) => {
     endDate: compareEnd.format('YYYY-MM-DD'),
   }
 }
+
+export const getPreviousMonthPeriod = (startDate, endDate) => {
+  if (!startDate || !endDate) {
+    return null
+  }
+
+  const start = dayjs(startDate)
+  const end = dayjs(endDate)
+
+  const compareStart = start.subtract(1, 'month')
+  const compareEnd = end.subtract(1, 'month')
+
+
+  return {
+    startDate: compareStart.format('YYYY-MM-DD'),
+    endDate: compareEnd.format('YYYY-MM-DD'),
+  }
+}
+
+export const getPreviousYearPeriod = (startDate, endDate) => {
+  if (!startDate || !endDate) {
+    return null
+  }
+
+  const start = dayjs(startDate)
+  const end = dayjs(endDate)
+
+  const compareStart = start.subtract(1, 'year')
+  const compareEnd = end.subtract(1, 'year')
+
+
+  return {
+    startDate: compareStart.format('YYYY-MM-DD'),
+    endDate: compareEnd.format('YYYY-MM-DD'),
+  }
+}
