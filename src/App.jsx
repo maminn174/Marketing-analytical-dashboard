@@ -8,7 +8,7 @@ import DateRangeControls from "./components/DateRangeControls";
 import { useDateRange } from "./hooks/useDateRange";
 import { useDashboardData } from "./hooks/useDashboardData";
 import { useComparisonPeriod } from "./hooks/useComparisonPeriod";
-
+import ComparisonPeriodControls from '/src/components/ComparisonPeriodControls'
 const App = () => {
 
   const [selectedRegion, setSelectedRegion] = useState(ALL_REGIONS)
@@ -23,9 +23,10 @@ const App = () => {
   } = useDateRange()
 
    const {
-       comparisonStartDate,
-       comparisonEndDate,
-       applyComparisonPreset,
+     comparisonStartDate,
+     comparisonEndDate,
+     applyComparisonPreset,
+     resetComparison,
    } = useComparisonPeriod({ startDate, endDate })
 
   const {
@@ -45,16 +46,6 @@ const App = () => {
 
   return (
     <div className="app">
-      <button onClick={() => applyComparisonPreset('previous-equal')}>
-        Сравнение такого же периода
-      </button>
-      <button onClick={() => applyComparisonPreset('previous-month')}>
-        Предыдущий месяц
-      </button>
-      <button onClick={() => applyComparisonPreset('previous-year')}>
-        Предыдущий год
-      </button>
-
       <p>
         Comparison: {comparisonStartDate} - {comparisonEndDate}
       </p>
@@ -68,6 +59,7 @@ const App = () => {
         onEndDateChange={setEndDate}
         onDateClick={handleDateClick}
       />
+      <ComparisonPeriodControls onPresetSelect={applyComparisonPreset} onReset={resetComparison} />
 
       <DashboardFilters
         regions={regions}
