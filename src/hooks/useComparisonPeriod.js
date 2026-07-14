@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getPreviousEqualPeriod, getPreviousYearPeriod, getPreviousMonthPeriod } from "../utils/comparisonPeriodUtils";
+import { getPreviousEqualPeriod, getPreviousYearPeriod, getPreviousMonthPeriod } from "@/utils/comparisonPeriodUtils";
 
 const comparisonPresetCalculators = {
   "previous-equal": getPreviousEqualPeriod,
@@ -38,8 +38,20 @@ export const useComparisonPeriod = ({startDate, endDate}) => {
       setComparisonEndDate(period.endDate)
   }
 
+  const applyCustomComparisonPeriod = (startDate, endDate) => {
+    if (startDate && endDate) {
+      setComparisonPreset('custom')
+      setComparisonStartDate(startDate)
+      setComparisonEndDate(endDate)
+    }
+  }
+
   useEffect(() => {
     if (!comparisonPreset) {
+      return
+    }
+
+    if (comparisonPreset === 'custom') {
       return
     }
 
@@ -66,6 +78,7 @@ export const useComparisonPeriod = ({startDate, endDate}) => {
     comparisonStartDate,
     comparisonEndDate,
     applyComparisonPreset,
-    resetComparison
+    resetComparison,
+    applyCustomComparisonPeriod,
   }
 }

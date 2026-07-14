@@ -1,5 +1,4 @@
 import { useState } from "react";
-import './App.scss'
 import DataTable from "./components/DataTable";
 import KpiGrid from './components/KPI/KpiGrid'
 import { ALL_REGIONS, ALL_CAMPAIGNS } from "./constants/dashboardFilters";
@@ -9,6 +8,7 @@ import { useDateRange } from "./hooks/useDateRange";
 import { useDashboardData } from "./hooks/useDashboardData";
 import { useComparisonPeriod } from "./hooks/useComparisonPeriod";
 import ComparisonPeriodControls from '/src/components/ComparisonPeriodControls'
+import './App.scss'
 const App = () => {
 
   const [selectedRegion, setSelectedRegion] = useState(ALL_REGIONS)
@@ -25,8 +25,9 @@ const App = () => {
    const {
      comparisonStartDate,
      comparisonEndDate,
-     applyComparisonPreset,
      resetComparison,
+     applyCustomComparisonPeriod,
+     applyComparisonPreset,
    } = useComparisonPeriod({ startDate, endDate })
 
   const {
@@ -59,7 +60,7 @@ const App = () => {
         onEndDateChange={setEndDate}
         onDateClick={handleDateClick}
       />
-      <ComparisonPeriodControls onPresetSelect={applyComparisonPreset} onReset={resetComparison} />
+      <ComparisonPeriodControls onPresetSelect={applyComparisonPreset} onCustomRangeSelect={applyCustomComparisonPeriod} onReset={resetComparison} />
 
       <DashboardFilters
         regions={regions}

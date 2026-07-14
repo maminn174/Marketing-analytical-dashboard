@@ -1,7 +1,85 @@
 import './KpiGrid.scss'
 import KpiCard from "../KpiCard";
-import { formatNumber, formatCurrency, formatPercent } from '../../../utils/formatters'
-import {calculateMetricDelta} from "../../../utils/calculateMetricDelta";
+import {
+  formatNumber,
+  formatDeltaPercent,
+  formatCurrency,
+  formatPercent, formatPosition,
+} from '@/utils/formatters'
+import {calculateMetricDelta} from "@/utils/calculateMetricDelta";
+
+const kpiCards = [
+  {
+    key: 'totalSpend',
+    title: 'Общий расход',
+    formatter: formatCurrency,
+    trend: 'lower-better',
+  },
+  {
+    key: 'totalLeads',
+    title: 'Общие лиды',
+    formatter: formatNumber,
+    trend: 'higher-better',
+  },
+  {
+    key: 'totalQualifiedLeads',
+    title: 'Квал. лиды',
+    formatter: formatNumber,
+    trend: 'higher-better',
+  },
+  {
+    key: 'totalSales',
+    title: 'Продажи',
+    formatter: formatNumber,
+    trend: 'higher-better',
+  },
+  {
+    key: 'cpl',
+    title: 'CPL',
+    formatter: formatCurrency,
+    trend: 'lower-better',
+  },
+  {
+    key: 'cpql',
+    title: 'CPQL',
+    formatter: formatCurrency,
+    trend: 'lower-better',
+  },
+  {
+    key: 'qualifiedLeadCr',
+    title: 'CR в квал. лид',
+    formatter: formatPercent,
+    trend: 'higher-better',
+  },
+  {
+    key: 'avgImpressionPosition',
+    title: 'Сред. позиция',
+    formatter: formatPosition,
+    trend: 'lower-better',
+  },
+]
+
+const getDeltaStatus = (percentDelta, trend) => {
+  if (percentDelta === null || percentDelta === undefined) {
+    return null
+  }
+
+  if (percentDelta === 0) {
+    return 'neutral'
+  }
+
+  if (trend === 'higher-better') {
+    if (percentDelta > 0) {
+      return "positive"
+    } else return 'negative'
+  }
+
+  if (trend === 'lower-better') {
+    if (percentDelta < 0) {
+      return "positive"
+    } else return 'negative'
+  }
+}
 
 const KpiGrid = (props) => {
   const {
@@ -9,29 +87,36 @@ const KpiGrid = (props) => {
     comparisonMetrics,
   } = props
 
-  const currentValue = metrics?.totalLeads
-  const comparisonValue = comparisonMetrics?.totalLeads
-
-  const delta = comparisonMetrics
-    ? calculateMetricDelta(currentValue, comparisonValue)
-    : null
 
   return (
     <div className="kpi-grid">
-      <KpiCard title="Общий расход" value={formatCurrency(metrics.totalSpend)}
-      />
-      <KpiCard
-        title="Лиды"
-        value={formatNumber(metrics.totalLeads)}
-        absoluteDelta={delta?.absoluteDelta}
-        percentDelta={delta?.percentDelta}
-      />
-      <KpiCard title="Квал. лиды" value={formatNumber(metrics.totalQualifiedLeads)} />
-      <KpiCard title="Продажи" value={formatNumber(metrics.totalSales)} />
-      <KpiCard title="CPL" value={formatCurrency(metrics.cpl.toFixed(0))} />
-      <KpiCard title="CPQL" value={formatCurrency(metrics.cpql.toFixed(0))} />
-      <KpiCard title="CR в квал. лид" value={formatPercent(metrics.qualifiedLeadCr)} />
-      <KpiCard title="Сред. позиция" value={metrics.avgImpressionPosition.toFixed(1)} />
+      {kpiCards.map(({title, key, formatter, trend}) => {
+        const currentValue = metrics?.[key]
+        const comparisonValue = comparisonMetrics?.[key]
+
+        const delta = comparisonMetrics
+          ? calculateMetricDelta(currentValue, comparisonValue)
+          : null
+
+        const deltaStatus = getDeltaStatus(delta?.percentDelta, trend)
+
+        const formattedDeltaPercent = formatDeltaPercent(delta?.percentDelta)
+
+        const percentDeltaLabel = formattedDeltaPercent === null
+          ? null
+          : `Разница: ${formattedDeltaPercent}`
+
+        return (
+          <KpiCard
+            key={key}
+            title={title}
+            value={formatter(currentValue)}
+            comparisonLabel={comparisonMetrics ? `Было: ${formatter(comparisonValue)}` : null}
+            percentDeltaLabel={percentDeltaLabel}
+            deltaStatus={deltaStatus}
+          />
+        )
+      })}
     </div>
   )
 }

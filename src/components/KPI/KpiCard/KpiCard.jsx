@@ -2,15 +2,19 @@ import './KpiCard.scss'
 
 const KpiCard = (props) => {
   const {
-    title, value, absoluteDelta, percentDelta
+    title, value, comparisonLabel, percentDeltaLabel, deltaStatus,
   } = props
+
+  const deltaClassName = deltaStatus
+    ? `kpi-card__value kpi-card__delta kpi-card__delta--${deltaStatus}`
+    : 'kpi-card__value kpi-card__delta'
 
   return (
     <div className="kpi-card">
       <h3 className="kpi-card__title">{title}</h3>
       <p className="kpi-card__value">{value}</p>
-      <p className="kpi-card__value">{absoluteDelta}</p>
-      <p className="kpi-card__value">{percentDelta}</p>
+      {comparisonLabel && <p className="kpi-card__value">{comparisonLabel}</p>}
+      {percentDeltaLabel && <p className={deltaClassName}>{percentDeltaLabel}</p>}
     </div>
   )
 }

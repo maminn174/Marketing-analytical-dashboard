@@ -7,4 +7,18 @@
   border-radius: var(--border-radius);
   gap: 20px;
   padding: 12px 24px;
+
+  &__delta {
+    &--positive {
+      color: green;
+    }
+
+    &--negative {
+      color: red;
+    }
+
+    &--neutral {
+      color: gray;
+    }
+  }
 }

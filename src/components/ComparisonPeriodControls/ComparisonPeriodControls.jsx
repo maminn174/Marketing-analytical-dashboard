@@ -58,7 +58,7 @@ const ComparisonPeriodControls = ({onPresetSelect, onReset, onCustomRangeSelect}
                 type="range"
                 allowSingleDateInRange
                 value={customRange}
-                onChange={setCustomRange}
+                onChange={handleCustomRangeChange}
               />
             )}
 
