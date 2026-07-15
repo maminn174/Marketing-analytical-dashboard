@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../server/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model DirectImportBatch {
+  id           String                  @id @default(cuid())
+  fileName     String
+  importedAt   DateTime                @default(now())
+  rowsTotal    Int
+  rowsImported Int
+  rowsSkipped  Int
+  stats        DirectDailyPhraseStat[]
+}
+
+model DirectDailyPhraseStat {
+  id            String            @id @default(cuid())
+  importBatchId String
+  importBatch   DirectImportBatch @relation(fields: [importBatchId], references: [id])
+
+  statDate         DateTime
+  campaignId       String
+  campaignName     String
+  adGroupId        String
+  adGroupName      String
+  criteriaType     String
+  keywordText      String
+  targetRegionName String
+  targetRegionId   String
+  deviceType       String
+
+  spend                 Decimal
+  clicks                Int
+  directConversions     Int
+  impressions           Int
+  avgBidPerClick        Decimal
+  avgImpressionPosition Decimal
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([statDate, campaignId, adGroupId, criteriaType, keywordText, targetRegionId, deviceType])
+}
