@@ -20,8 +20,8 @@ export const useDashboardData = ({
 
   const mergedData = mergeMissedLeads(mainData, missedLeadsData)
 
-  const regions = getUniqueOptions(mergedData, "region", ALL_REGIONS)
-  const campaigns = getUniqueOptions(mergedData, "campaign", ALL_CAMPAIGNS)
+  const regions = getUniqueOptions(mergedData, "regionName", ALL_REGIONS)
+  const campaigns = getUniqueOptions(mergedData, "campaignName", ALL_CAMPAIGNS)
 
   const filteredData = filterDashboardData({
     data: mergedData,

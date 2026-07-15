@@ -1,7 +1,7 @@
 export const mergeMissedLeads = (mainData, missedLeads) => {
   return mainData.map((item) => {
    const foundLeads = missedLeads.reduce((count, missedLead) => {
-      if (item.campaign === missedLead.campaign && item.keyword === missedLead.keyword) {
+      if (item.campaignName === missedLead.campaignName && item.keywordText === missedLead.keywordText) {
         return count + 1
       }
       return count

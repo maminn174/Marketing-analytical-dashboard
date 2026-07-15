@@ -30,11 +30,11 @@ const DataTable = ({ data }) => {
               id,
               date,
               source,
-              campaign,
-              region,
+              campaignName,
+              regionName,
               impressions,
               clicks,
-              keyword,
+              keywordText,
               spend,
               leads,
               qualifiedLeads,
@@ -49,9 +49,9 @@ const DataTable = ({ data }) => {
               <tr key={id}>
                 <td>{date}</td>
                 <td>{source}</td>
-                <td>{campaign}</td>
-                <td>{keyword}</td>
-                <td>{region}</td>
+                <td>{campaignName}</td>
+                <td>{keywordText}</td>
+                <td>{regionName}</td>
                 <td>{formatNumber(impressions)}</td>
                 <td>{formatNumber(clicks)}</td>
                 <td>{formatCurrency(spend)}</td>

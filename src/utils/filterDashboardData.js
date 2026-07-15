@@ -11,10 +11,10 @@ export const filterDashboardData = ({
                                     }) => {
   return data.filter((item) => {
     const regionMatch =
-      selectedRegion === allRegionsLabel || item.region === selectedRegion
+      selectedRegion === allRegionsLabel || item.regionName === selectedRegion
 
     const campaignMatch =
-      selectedCampaign === allCampaignsLabel || item.campaign === selectedCampaign
+      selectedCampaign === allCampaignsLabel || item.campaignName === selectedCampaign
 
     let periodMatch = true
     const today = new Date().toISOString().slice(0, 10)
