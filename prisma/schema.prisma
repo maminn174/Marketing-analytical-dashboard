@@ -11,6 +11,15 @@ datasource db {
   provider = "postgresql"
 }
 
+enum AppealType {
+  CALL
+  PHONE_CLICK
+  FORM
+  QUIZ
+  MESSENGER
+  OTHER
+}
+
 model DirectImportBatch {
   id           String                  @id @default(cuid())
   fileName     String
@@ -48,4 +57,20 @@ model DirectDailyPhraseStat {
   updatedAt DateTime @updatedAt
 
   @@unique([statDate, campaignId, adGroupId, criteriaType, keywordText, targetRegionId, deviceType])
+}
+
+model ManualLead {
+  id String @id @default(cuid())
+  leadDate DateTime
+  campaignName String
+  appealType AppealType
+  keywordText String?
+  metrikaUrl String?
+  amoDealUrl String
+  comment String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("manual_leads")
 }
