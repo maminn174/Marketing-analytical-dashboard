@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { mockData, missedLeadsMockData } from "../data/mockData";
+import { missedLeadsMockData } from "../data/mockData";
 import { mergeMissedLeads } from "../utils/mergeMissedLeads";
 import { filterDashboardData } from "../utils/filterDashboardData";
 import { calculateMetrics } from "../utils/calculateMetrics";
@@ -15,7 +15,7 @@ export const useDashboardData = ({
   comparisonStartDate,
   comparisonEndDate,
 }) => {
-  const [mainData, setMainData] = useState(mockData)
+  const [mainData, setMainData] = useState([])
   const [missedLeadsData, setMissedLeadsData] = useState(missedLeadsMockData)
 
   const mergedData = mergeMissedLeads(mainData, missedLeadsData)
