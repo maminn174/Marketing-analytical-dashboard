@@ -1,0 +1,12 @@
+POST http://localhost:3001/api/manual-leads
+Content-Type: application/json
+
+{
+  "leadDate": "2026-07-18",
+  "campaignName": "Тестовая кампания",
+  "appealType": "CALL",
+  "keywordText": "купить окна",
+  "metrikaUrl": null,
+  "amoDealUrl": null,
+  "comment": "Тестовый ручной лид"
+}

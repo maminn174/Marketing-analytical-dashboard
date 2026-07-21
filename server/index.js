@@ -38,6 +38,14 @@ app.get('/api/direct-stats', async (req, res) => {
   }
 })
 
+app.post('/api/manual-leads', async (req, res) => {
+  console.log(req.body)
+
+  res.json({
+    message: 'Lead received',
+  })
+})
+
 app.listen(PORT, () => {
   console.log(`API server is running on http://localhost:${PORT}`)
 })
