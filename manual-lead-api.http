@@ -7,6 +7,6 @@ Content-Type: application/json
   "appealType": "CALL",
   "keywordText": "купить окна",
   "metrikaUrl": null,
-  "amoDealUrl": null,
+  "amoDealUrl": "ссылка",
   "comment": "Тестовый ручной лид"
 }

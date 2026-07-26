@@ -39,11 +39,42 @@ app.get('/api/direct-stats', async (req, res) => {
 })
 
 app.post('/api/manual-leads', async (req, res) => {
-  console.log(req.body)
+  const {
+    leadDate,
+    campaignName,
+    appealType,
+    keywordText,
+    metrikaUrl,
+    amoDealUrl,
+    comment,
+  } = req.body
 
-  res.json({
-    message: 'Lead received',
+  if (!leadDate || !campaignName || !appealType) {
+    return res.status(400).json({
+      message: 'Нет обязательного поля'
+    })
+  }
+
+  const createLead = await prisma.manualLead.create({
+    data: {
+      leadDate: new Date(leadDate),
+      campaignName,
+      appealType,
+      keywordText,
+      metrikaUrl,
+      amoDealUrl,
+      comment,
+    }
   })
+
+  return res.status(201).json({
+    message: 'Запись создана',
+    lead: createLead,
+  })
+})
+
+app.get('api/manual-leads', async (req, res) => {
+
 })
 
 app.listen(PORT, () => {
