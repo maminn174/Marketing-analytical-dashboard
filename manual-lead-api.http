@@ -2,10 +2,10 @@ POST http://localhost:3001/api/manual-leads
 Content-Type: application/json
 
 {
-  "leadDate": "2026-07-18",
-  "campaignName": "Тестовая кампания",
+  "leadDate": "2026-07-15",
+  "campaignName": "Search | Bankruptcy | Moscow",
   "appealType": "CALL",
-  "keywordText": "купить окна",
+  "keywordText": "bank",
   "metrikaUrl": null,
   "amoDealUrl": "ссылка",
   "comment": "Тестовый ручной лид"

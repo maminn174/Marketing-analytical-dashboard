@@ -27,6 +27,9 @@ app.get('/api/direct-stats', async (req, res) => {
       spend: Number(row.spend),
       clicks: row.clicks,
       directConversions: row.directConversions,
+      leads: 0,
+      qualifiedLeads: 0,
+      sales: 0,
       impressions: row.impressions,
       avgBidPerClick: Number(row.avgBidPerClick),
       avgImpressionPosition: Number(row.avgImpressionPosition),
@@ -35,6 +38,20 @@ app.get('/api/direct-stats', async (req, res) => {
     res.json(data)
   } catch (error) {
     res.status(500).json({ message: 'Failed to load direct stats' })
+  }
+})
+
+app.get('/api/manual-leads', async (req, res) => {
+  try {
+    const manualLeads = await prisma.manualLead.findMany()
+
+    return res.status(200).json({
+      data: manualLeads,
+    })
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Failed to load manual leads'
+    })
   }
 })
 
@@ -49,32 +66,39 @@ app.post('/api/manual-leads', async (req, res) => {
     comment,
   } = req.body
 
-  if (!leadDate || !campaignName || !appealType) {
+  if (!leadDate || !campaignName || !appealType || !amoDealUrl) {
     return res.status(400).json({
       message: 'Нет обязательного поля'
     })
   }
 
-  const createLead = await prisma.manualLead.create({
-    data: {
-      leadDate: new Date(leadDate),
-      campaignName,
-      appealType,
-      keywordText,
-      metrikaUrl,
-      amoDealUrl,
-      comment,
+  try {
+    const createLead = await prisma.manualLead.create({
+      data: {
+        leadDate: new Date(leadDate),
+        campaignName,
+        appealType,
+        keywordText,
+        metrikaUrl,
+        amoDealUrl,
+        comment,
+      }
+    })
+
+    return res.status(201).json({
+      message: 'Запись создана',
+      lead: createLead,
+    })
+  } catch (error) {
+    if (error.code === 'P2002') {
+      return res.status(409).json({
+        message: 'Manual lead with this amoDealUrl already exists'
+      })
     }
-  })
-
-  return res.status(201).json({
-    message: 'Запись создана',
-    lead: createLead,
-  })
-})
-
-app.get('api/manual-leads', async (req, res) => {
-
+    return res.status(500).json({
+      message: 'Failed to create manual lead'
+    })
+  }
 })
 
 app.listen(PORT, () => {

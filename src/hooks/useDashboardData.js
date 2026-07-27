@@ -1,10 +1,9 @@
-import { useState } from "react";
-import { missedLeadsMockData } from "../data/mockData";
-import { mergeMissedLeads } from "../utils/mergeMissedLeads";
-import { filterDashboardData } from "../utils/filterDashboardData";
-import { calculateMetrics } from "../utils/calculateMetrics";
-import { getUniqueOptions } from "../utils/getUniqueOptions";
-import { ALL_REGIONS, ALL_CAMPAIGNS } from "../constants/dashboardFilters";
+import { useState, useEffect } from "react";
+import { mergeMissedLeads } from "@/utils/mergeMissedLeads";
+import { filterDashboardData } from "@/utils/filterDashboardData";
+import { calculateMetrics } from "@/utils/calculateMetrics";
+import { getUniqueOptions } from "@/utils/getUniqueOptions";
+import { ALL_REGIONS, ALL_CAMPAIGNS } from "@/constants/dashboardFilters";
 
 
 export const useDashboardData = ({
@@ -16,7 +15,29 @@ export const useDashboardData = ({
   comparisonEndDate,
 }) => {
   const [mainData, setMainData] = useState([])
-  const [missedLeadsData, setMissedLeadsData] = useState(missedLeadsMockData)
+  const [missedLeadsData, setMissedLeadsData] = useState([])
+
+  useEffect(() => {
+    const loadManualLeads = async () => {
+      const response = await fetch('http://localhost:3001/api/manual-leads')
+      const json = await response.json()
+
+      setMissedLeadsData(json.data)
+    }
+
+    loadManualLeads()
+  }, []);
+
+  useEffect(() => {
+    const loadDirectStats = async () => {
+      const response = await fetch('http://localhost:3001/api/direct-stats')
+      const json = await response.json()
+
+      setMainData(json)
+    }
+
+    loadDirectStats()
+  }, []);
 
   const mergedData = mergeMissedLeads(mainData, missedLeadsData)
 
