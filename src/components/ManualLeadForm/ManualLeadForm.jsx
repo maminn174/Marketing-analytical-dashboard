@@ -1,12 +1,23 @@
 import './ManualLeadForm.scss'
-import clsx from 'clsx'
+import {Select} from '@mantine/core'
+
 
 export default () => {
 
   return (
     <form>
-      <label>
-      </label>
+      <Select
+        label="Кампания"
+        placeholder="Выберите кампанию"
+        data={[
+          'Москва',
+          'Москва - топ',
+          'Санкт-Петербург',
+          'Новосибирск',
+          'Нижний Новгород',
+          'Пермь',
+        ]}
+      />
     </form>
   )
 }

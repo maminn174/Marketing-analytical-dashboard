@@ -9,6 +9,10 @@ import { useDashboardData } from "./hooks/useDashboardData";
 import { useComparisonPeriod } from "./hooks/useComparisonPeriod";
 import ComparisonPeriodControls from '/src/components/ComparisonPeriodControls'
 import './App.scss'
+import {Button, Modal} from "@mantine/core";
+import {useDisclosure} from "@mantine/hooks";
+import ManualLeadForm from "@/components/ManualLeadForm";
+
 const App = () => {
 
   const [selectedRegion, setSelectedRegion] = useState(ALL_REGIONS)
@@ -45,6 +49,8 @@ const App = () => {
     comparisonEndDate,
   })
 
+  const [opened, { open, close }] = useDisclosure(false);
+
   return (
     <div className="app">
       <p>
@@ -52,6 +58,13 @@ const App = () => {
       </p>
 
       <h1 className="app__title">Маркетинговый дашборд</h1>
+      
+      <Modal opened={opened} onClose={close}>
+        {ManualLeadForm()}
+      </Modal>
+      <Button variant="default" onClick={open}>
+        Open modal
+      </Button>
 
       <DateRangeControls
         startDate={startDate}
