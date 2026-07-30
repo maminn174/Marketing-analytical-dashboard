@@ -40,6 +40,7 @@ const App = () => {
     filteredData,
     metrics,
     comparisonMetrics,
+    setMissedLeadsData,
   } = useDashboardData({
     selectedRegion,
     selectedCampaign,
@@ -51,19 +52,23 @@ const App = () => {
 
   const [opened, { open, close }] = useDisclosure(false);
 
+  const handleLeadCreated = (createdLead) => {
+    setMissedLeadsData((currentLeads) => [...currentLeads, createdLead])
+  }
+
   return (
     <div className="app">
-      <p>
-        Comparison: {comparisonStartDate} - {comparisonEndDate}
-      </p>
 
       <h1 className="app__title">Маркетинговый дашборд</h1>
       
       <Modal opened={opened} onClose={close}>
-        {ManualLeadForm()}
+        <ManualLeadForm
+          campaigns={campaigns}
+          onLeadCreated={handleLeadCreated}
+        />
       </Modal>
       <Button variant="default" onClick={open}>
-        Open modal
+        Добавить лид
       </Button>
 
       <DateRangeControls
