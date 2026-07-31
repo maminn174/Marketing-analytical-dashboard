@@ -30,4 +30,10 @@
   tbody tr:last-child td {
     border-bottom: none;
   }
+
+  &__row {
+    &--manual {
+      color: gray;
+    }
+  }
 }

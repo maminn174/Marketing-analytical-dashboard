@@ -1,4 +1,4 @@
-import isDateInRange from "./periodUtils";
+import isDateInRange from "./periodUtils.js"
 
 export const filterDashboardData = ({
                                       data,

@@ -1,4 +1,6 @@
 import { mergeMissedLeads } from "./mergeMissedLeads.js"
+import { filterDashboardData } from "./filterDashboardData.js"
+import { calculateMetrics } from "./calculateMetrics.js"
 
 const mainData = [
   {
@@ -191,6 +193,65 @@ const missedLeads = [
 
 const mergedData = mergeMissedLeads(mainData, missedLeads)
 
+const campaignAData = filterDashboardData({
+  data: mergedData,
+  selectedRegion: "Все регионы",
+  selectedCampaign: "Campaign A",
+  allRegionsLabel: "Все регионы",
+  allCampaignsLabel: "Все кампании",
+  startDate: null,
+  endDate: null,
+})
+
+const totalCampaignALeads = campaignAData.reduce((acc, item) => {
+  return acc + item.leads
+}, 0)
+
+const campaignBData = filterDashboardData({
+  data: mergedData,
+  selectedRegion: "Все регионы",
+  selectedCampaign: "Campaign B",
+  allRegionsLabel: "Все регионы",
+  allCampaignsLabel: "Все кампании",
+  startDate: null,
+  endDate: null,
+})
+
+const totalCampaignBLeads = campaignBData.reduce((acc, item) => {
+  return acc + item.leads
+}, 0)
+
+const moscowCampaignAData = filterDashboardData({
+  data: mergedData,
+  selectedRegion: "Moscow",
+  selectedCampaign: "Campaign A",
+  allRegionsLabel: "Все регионы",
+  allCampaignsLabel: "Все кампании",
+  startDate: null,
+  endDate: null,
+})
+
+const totalMoscowCampaignALeads = moscowCampaignAData.reduce((acc, item) => {
+  return acc + item.leads
+}, 0)
+
+const allData = filterDashboardData({
+  data: mergedData,
+  selectedRegion: "Все регионы",
+  selectedCampaign: "Все кампании",
+  allRegionsLabel: "Все регионы",
+  allCampaignsLabel: "Все кампании",
+  startDate: null,
+  endDate: null,
+})
+
+const totalAllLeads = allData.reduce((acc, item) => {
+  return acc + item.leads
+}, 0)
+
+const allMetrics = calculateMetrics(allData)
+const campaignAMetrics = calculateMetrics(campaignAData)
+
 const expectEqual = (actual, expected, message) => {
   if (actual !== expected) {
     console.error(`FAIL: ${message}`)
@@ -200,8 +261,33 @@ const expectEqual = (actual, expected, message) => {
   }
   console.log(`OK: ${message}`)
 }
+
+const expectClose = (actual, expected, message) => {
+  const difference = Math.abs(actual - expected)
+
+  if (difference > 0.001) {
+    console.error(`FAIL: ${message}`)
+    console.error(`Expected close to: ${expected}`)
+    console.error(`Actual: ${actual}`)
+    return
+  }
+
+  console.log(`OK: ${message}`)
+}
+
 expectEqual(mergedData.length, 13, "ручные лиды без ключа добавились отдельными строками")
 const manualLeadWithoutKeyword = mergedData.find((item) => item.id === "manual-102")
 expectEqual(manualLeadWithoutKeyword.leads, 1, "лид без ключа остаётся ровно одним лидо")
 const manualRows = mergedData.filter((item) => item.isManualLead)
 expectEqual(manualRows.length, 2, "лиды без ключа не размножаются по рекламным строкам")
+const keywordRow = mergedData.find((item) => {
+  return item.campaignName === "Campaign A" && item.keywordText === "buy windows"
+})
+expectEqual(keywordRow.leads, 1, "лид с ключом доступен на уровне этой фразы")
+expectEqual(keywordRow.spend, 500, "один лид не меняет расход")
+expectEqual(totalCampaignALeads, 2, "лид без ключа учитывается при выборе его кампании")
+expectEqual(totalCampaignBLeads, 1, "лид без ключа не учитывается в другой кампании")
+expectEqual(totalMoscowCampaignALeads, 1, "лид без региона не учитывается в конкретном регионе")
+expectEqual(totalAllLeads, 3, "лид без ключа учитывается в общей статистике")
+expectClose(allMetrics.cpl, 2900 / 3, "общий CPL пересчитывается правильно")
+expectEqual(campaignAMetrics.cpl, 1100, "CPL кампании пересчитывается правильно")

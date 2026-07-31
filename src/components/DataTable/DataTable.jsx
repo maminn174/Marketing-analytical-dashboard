@@ -1,5 +1,5 @@
 import './DataTable.scss'
-import { formatNumber, formatPosition, formatCurrency, formatPercent } from '../../utils/formatters'
+import { formatNumber, formatPosition, formatCurrency, formatPercent } from '@/utils/formatters'
 
 const DataTable = ({ data }) => {
   return (
@@ -42,23 +42,34 @@ const DataTable = ({ data }) => {
               sales
             } = item
             const qualifiedLeadCr = leads > 0 ? (qualifiedLeads / leads) * 100 : 0
-            const cpl = leads > 0 ? (spend/leads) : spend
-            const cpql = qualifiedLeads > 0 ? (spend/qualifiedLeads) : spend
+            const cpl = leads > 0 ? (spend/leads) : null
+            const cpql = qualifiedLeads > 0 ? (spend/qualifiedLeads) : null
+
+            const shouldShowCplDash = leads === 0 || item.isManualLead
+            const shouldShowCpqlDash = qualifiedLeads === 0 || item.isManualLead
+
+            const normalizedKeywordText = keywordText?.trim() ?? ""
+            const normalizedRegionName = regionName?.trim() ?? ""
+            const displayedKeywordText = normalizedKeywordText || "Не определен"
+            const displayedRegionName = normalizedRegionName || "Не определен"
 
             return (
-              <tr key={id}>
+              <tr
+                className={item.isManualLead ? "data-table__row--manual" : ""}
+                key={id}
+              >
                 <td>{date}</td>
                 <td>{source}</td>
                 <td>{campaignName}</td>
-                <td>{keywordText}</td>
-                <td>{regionName}</td>
+                <td>{displayedKeywordText}</td>
+                <td>{displayedRegionName}</td>
                 <td>{formatNumber(impressions)}</td>
                 <td>{formatNumber(clicks)}</td>
                 <td>{formatCurrency(spend)}</td>
                 <td>{formatNumber(leads)}</td>
-                <td>{formatCurrency(cpl.toFixed(0))}</td>
+                <td>{shouldShowCplDash ? "-" : formatCurrency(cpl.toFixed(0))}</td>
                 <td>{formatNumber(qualifiedLeads)}</td>
-                <td>{formatCurrency(cpql.toFixed(0))}</td>
+                <td>{shouldShowCpqlDash ? "-" : formatCurrency(cpql.toFixed(0))}</td>
                 <td>{formatPercent(qualifiedLeadCr)}</td>
                 <td>{formatPosition(avgImpressionPosition)}</td>
                 <td>{formatNumber(sales)}</td>
