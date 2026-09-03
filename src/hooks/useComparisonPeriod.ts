@@ -47,7 +47,10 @@ export const useComparisonPeriod = ({startDate, endDate}: UseComparisonPeriodPar
       setComparisonEndDate(period.endDate)
   }
 
-  const applyCustomComparisonPeriod = (startDate, endDate) => {
+  const applyCustomComparisonPeriod = (
+    startDate: Date | null,
+    endDate: Date | null,
+  ) => {
     if (startDate && endDate) {
       setComparisonPreset('custom')
       setComparisonStartDate(startDate)

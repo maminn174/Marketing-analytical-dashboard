@@ -7,6 +7,12 @@ export const useDateRange = () => {
   const [endDate, setEndDate] = useState<Date | null>(null)
 
   const handleDateClick = (clickedDate: Date | null) => {
+    if (clickedDate === null) {
+      setStartDate(null)
+      setEndDate(null)
+      return;
+    }
+
     if (startDate === null) {
       setStartDate(clickedDate)
       return
