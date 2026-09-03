@@ -1,6 +1,6 @@
-import { mergeMissedLeads } from "./mergeMissedLeads.js"
-import { filterDashboardData } from "./filterDashboardData.js"
-import { calculateMetrics } from "./calculateMetrics.js"
+import { mergeMissedLeads } from "./mergeMissedLeads.ts"
+import { filterDashboardData } from "./filterDashboardData.ts"
+import { calculateMetrics } from "./calculateMetrics.ts"
 
 const mainData = [
   {

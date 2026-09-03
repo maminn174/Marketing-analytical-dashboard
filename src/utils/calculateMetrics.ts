@@ -1,4 +1,6 @@
-export const calculateMetrics = (data) => {
+import type { DashBoardMetrics, DashBoardRow } from "@/types/dashboard";
+
+export const calculateMetrics = (data: DashBoardRow[]): DashBoardMetrics => {
   const totalSpend = data.reduce((sum, item) => {
     return sum + item.spend;
   }, 0);

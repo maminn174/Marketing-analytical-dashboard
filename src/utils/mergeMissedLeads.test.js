@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { mergeMissedLeads } from "./mergeMissedLeads.js";
+import { mergeMissedLeads } from "./mergeMissedLeads.ts";
 
 describe("mergeMissedLeads", () => {
   it("не меняет данные, если массив ручных лидов пустой", () => {

@@ -1,4 +1,15 @@
 import isDateInRange from "./periodUtils.js"
+import type { DashBoardRow } from "@/types/dashboard";
+
+type FilterDashboardDataParams = {
+  data: DashBoardRow[]
+  selectedRegion: string
+  selectedCampaign: string
+  allRegionsLabel: string
+  allCampaignsLabel: string
+  startDate: Date | null
+  endDate: Date | null
+}
 
 export const filterDashboardData = ({
                                       data,
@@ -8,7 +19,7 @@ export const filterDashboardData = ({
                                       allCampaignsLabel,
                                       startDate,
                                       endDate,
-                                    }) => {
+                                    }: FilterDashboardDataParams): DashBoardRow[] => {
   return data.filter((item) => {
     const regionMatch =
       selectedRegion === allRegionsLabel || item.regionName === selectedRegion

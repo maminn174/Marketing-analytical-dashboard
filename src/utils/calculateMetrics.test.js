@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { calculateMetrics } from "./calculateMetrics.js";
+import { calculateMetrics } from "./calculateMetrics.ts";
 
 describe("calculateMetrics", () => {
   it("считает сумму расходов и лидов", () => {

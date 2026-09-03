@@ -1,16 +1,25 @@
 import { useState, useEffect } from "react";
 import { getPreviousEqualPeriod, getPreviousYearPeriod, getPreviousMonthPeriod } from "@/utils/comparisonPeriodUtils";
 
-const comparisonPresetCalculators = {
+type UseComparisonPeriodParams = {
+  startDate: Date | null
+  endDate: Date | null
+}
+
+export type ComparisonPreset = 'previous-equal' | 'previous-month' | 'previous-year' | 'custom'
+
+type CalculatedComparisonPreset = Exclude<ComparisonPreset, 'custom'>
+
+const comparisonPresetCalculators: Record<CalculatedComparisonPreset, typeof getPreviousEqualPeriod> = {
   "previous-equal": getPreviousEqualPeriod,
   "previous-month": getPreviousMonthPeriod,
   "previous-year": getPreviousYearPeriod,
 }
 
-export const useComparisonPeriod = ({startDate, endDate}) => {
-  const [comparisonPreset, setComparisonPreset] = useState(null)
-  const [comparisonStartDate, setComparisonStartDate] = useState(null)
-  const [comparisonEndDate, setComparisonEndDate] = useState(null)
+export const useComparisonPeriod = ({startDate, endDate}: UseComparisonPeriodParams) => {
+  const [comparisonPreset, setComparisonPreset] = useState<ComparisonPreset | null>(null)
+  const [comparisonStartDate, setComparisonStartDate] = useState<Date | null>(null)
+  const [comparisonEndDate, setComparisonEndDate] = useState<Date | null>(null)
 
   const resetComparison = () => {
     setComparisonPreset(null)
@@ -18,7 +27,7 @@ export const useComparisonPeriod = ({startDate, endDate}) => {
     setComparisonEndDate(null)
   }
 
-  const applyComparisonPreset = (preset) => {
+  const applyComparisonPreset = (preset: CalculatedComparisonPreset) => {
     const calculatePeriod = comparisonPresetCalculators[preset]
 
       if (!calculatePeriod) {

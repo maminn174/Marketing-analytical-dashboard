@@ -36,7 +36,7 @@ app.get('/api/direct-stats', async (req, res) => {
     }))
 
     res.json(data)
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: 'Failed to load direct stats' })
   }
 })
@@ -48,7 +48,7 @@ app.get('/api/manual-leads', async (req, res) => {
     return res.status(200).json({
       data: manualLeads,
     })
-  } catch (error) {
+  } catch {
     return res.status(500).json({
       message: 'Failed to load manual leads'
     })
@@ -90,9 +90,9 @@ app.post('/api/manual-leads', async (req, res) => {
       lead: createLead,
     })
   } catch (error) {
-    if (error.code === 'P2002') {
-      return res.status(409).json({
-        message: 'Manual lead with this amoDealUrl already exists'
+      if (error.code === 'P2002') {
+        return res.status(409).json({
+          message: 'Manual lead with this amoDealUrl already exists'
       })
     }
     return res.status(500).json({

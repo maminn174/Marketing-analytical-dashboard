@@ -4,14 +4,15 @@ import KpiGrid from './components/KPI/KpiGrid'
 import { ALL_REGIONS, ALL_CAMPAIGNS } from "./constants/dashboardFilters";
 import DashboardFilters from "./components/DashboardFilters";
 import DateRangeControls from "./components/DateRangeControls";
-import { useDateRange } from "./hooks/useDateRange";
-import { useDashboardData } from "./hooks/useDashboardData";
+import { useDateRange } from "./hooks/useDateRange.ts";
+import { useDashboardData } from "./hooks/useDashboardData.ts";
 import { useComparisonPeriod } from "./hooks/useComparisonPeriod";
-import ComparisonPeriodControls from '/src/components/ComparisonPeriodControls'
+import ComparisonPeriodControls from '@/components/ComparisonPeriodControls'
 import './App.scss'
 import {Button, Modal} from "@mantine/core";
 import {useDisclosure} from "@mantine/hooks";
 import ManualLeadForm from "@/components/ManualLeadForm";
+import type { ManualLead } from '@/types/dashboard'
 
 const App = () => {
 
@@ -23,7 +24,6 @@ const App = () => {
     endDate,
     setStartDate,
     setEndDate,
-    handleDateClick,
   } = useDateRange()
 
    const {
@@ -52,8 +52,8 @@ const App = () => {
 
   const [opened, { open, close }] = useDisclosure(false);
 
-  const handleLeadCreated = (createdLead) => {
-    setMissedLeadsData((currentLeads) => [...currentLeads, createdLead])
+  const handleLeadCreated = (createdLead: ManualLead) => {
+    setMissedLeadsData((currentLeads: ManualLead[]) => [...currentLeads, createdLead])
   }
 
   return (
@@ -76,7 +76,6 @@ const App = () => {
         endDate={endDate}
         onStartDateChange={setStartDate}
         onEndDateChange={setEndDate}
-        onDateClick={handleDateClick}
       />
       <ComparisonPeriodControls onPresetSelect={applyComparisonPreset} onCustomRangeSelect={applyCustomComparisonPeriod} onReset={resetComparison} />
 
