@@ -1,30 +1,111 @@
-# React + Vite
+# Marketing Analytics Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack web application for analyzing advertising campaign performance, lead data, and key marketing metrics.
 
-Currently, two official plugins are available:
+The dashboard combines advertising statistics with lead data and provides tools for filtering, comparing periods, tracking KPIs, and manually adding missed leads.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+> 🚧 The project is currently under active development.
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Currently implemented:
 
-## direct_stats
-- date
-- campaignId
-- campaignName
-- groupId
-- groupName
-- criteriaType
-- keywordText
-- targetRegionName
-- targetRegionId
-- deviceType
-- spend
-- clicks
-- directConversions
-- impressions
-- avgBidPerClick
-- avgImpressionPosition
+* Advertising campaign performance analytics
+* KPI calculation and visualization
+* Filtering by region
+* Filtering by advertising campaign
+* Custom date range selection
+* Period-to-period comparison
+* Marketing data table
+* Manual lead creation
+* Dynamic recalculation of dashboard metrics
+* Modal-based interface for adding lead data
+* Separation of business logic into reusable hooks and utilities
+
+## Tech Stack
+
+### Frontend
+
+* React 19
+* TypeScript
+* Vite
+* SCSS
+* Mantine UI
+* Day.js
+
+### Backend & Data
+
+* Node.js
+* Express
+* PostgreSQL
+* Prisma ORM
+
+### Development & Testing
+
+* Vitest
+* ESLint
+* Git
+
+## Project Structure
+
+```text
+src/
+├── components/   reusable UI components
+├── constants/    shared dashboard constants
+├── data/         application data
+├── hooks/        reusable React hooks and business logic
+├── services/     data and API services
+├── styles/       shared styles
+├── types/        TypeScript types and interfaces
+└── utils/        helper functions
+```
+
+## Application Logic
+
+The project uses custom React hooks to separate UI and business logic.
+
+Examples:
+
+* `useDateRange` — manages the selected reporting period
+* `useComparisonPeriod` — manages comparison periods and presets
+* `useDashboardData` — prepares filtered data and calculates dashboard metrics
+
+## Dashboard Functionality
+
+### Filters
+
+Dashboard data can be filtered by:
+
+* Date range
+* Region
+* Advertising campaign
+
+### Period Comparison
+
+The dashboard supports comparison between the selected reporting period and another custom or predefined period.
+
+KPI values are recalculated for both periods to make performance changes easier to analyze.
+
+### KPI Metrics
+
+The application calculates marketing indicators based on the currently selected filters and reporting period.
+
+### Lead Management
+
+Missed leads can be manually added through a modal form.
+
+After a lead is created, the dashboard data is updated and recalculated.
+
+## Project Status
+
+The project is currently under active development.
+
+Planned improvements include:
+
+* completing backend and database integration
+* expanding TypeScript usage
+* improving test coverage
+* refining application architecture
+* improving dashboard UX
+* adding additional analytics features
+* production deployment
